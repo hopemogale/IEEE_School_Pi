@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Temperature Display</title>
+
+<style>
+   body {
+      margin: 0;
+   }
+   #temp {
+      height: 300px;
+      background: yellow;
+      background: linear-gradient(red, yellow);
+      
+      font-family: sans-serif;
+      font-size: 250px;
+      text-align: center;
+   }
+</style>
+<script>
+   
+window.setTimeout(load, 1000);
+   
+function load()
+{
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4 && 
+          xhttp.status == 200) {
+         o = JSON.parse(xhttp.responseText);
+         document.getElementById("temp").innerHTML = o.temp;
+         window.setTimeout(load, 1000);
+      }
+   };
+   xhttp.open("GET", "/temp?index=1", true);
+   xhttp.send();
+}
+
+</script>
+</head>
+
+<body>
+   <div id="temp">0.0</div>
+</body>
+
+</html>

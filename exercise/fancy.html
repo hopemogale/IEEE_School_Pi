@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Fancy LED example</title>
+
+<style>
+   body {
+      font-family: sans-serif;
+      margin:10px;
+   }
+   td {
+      width : 40px;
+      height : 40px;
+      border: solid 2px #808080;
+   }
+   table {
+      border-spacing:0;
+   }
+</style>
+<script>
+
+var rgbSel = ["255","255","255"];
+
+function rpcSetLed()
+{
+   this.style.backgroundColor = "rgb("+rgbSel[0]+","+rgbSel[1]+","+rgbSel[2]+")";
+
+   var request = {};
+   request.jsonrpc = "2.0";
+   request.method = "setled";
+   request.params = [];
+   request.params[0] = this.row;
+   request.params[1] = this.col;
+   request.params[2] = rgbSel[0];
+   request.params[3] = rgbSel[1];
+   request.params[4] = rgbSel[2];
+   request.id = 1;
+
+   var xhttp = new XMLHttpRequest();
+   xhttp.open("POST", "/json-rpc", true);
+   xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send(JSON.stringify(request));
+}
+
+function rpcGetLed()
+{
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+         var o = JSON.parse(xhttp.responseText);
+         var t = document.getElementById("led");
+         for (var r = 0; r < 8; r++) {
+            for (var c = 0; c < 8; c++) {
+               var cell = t.rows[r].cells[c];
+               var rgb = o.result[r][c];
+               cell.style.backgroundColor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
+            }
+         }
+      }
+   };
+
+   var request = {};
+   request.jsonrpc = "2.0";
+   request.method = "getled";
+   request.id = 1;
+
+   xhttp.open("POST", "/json-rpc", true);
+   xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send(JSON.stringify(request));
+}
+
+function selectColor()
+{
+   rgbSel = this.style.backgroundColor.match(/\d+/g);
+   document.getElementById("selcol").style.backgroundColor = this.style.backgroundColor;
+}
+
+var color = [ "000000", "FF0000", "00FF00", "0000FF", "FFFF00", "FFFFFF" ];
+
+function init() {
+   var colorTable = document.getElementById("color");
+   var row = colorTable.insertRow(-1);
+   var cell = row.insertCell(-1);
+   cell.id = "selcol";
+   var cell = row.insertCell(-1);
+   cell.style.border = "none";
+
+   for (var r = 0; r < color.length; r++) {
+      var cell = row.insertCell(-1);
+      cell.style.backgroundColor = "#"+color[r];
+      cell.onclick = selectColor;
+   }
+
+   var ledTable = document.getElementById("led");
+   for (var r = 0; r < 8; r++) {
+      var row = ledTable.insertRow(-1);
+      for (var c = 0; c < 8; c++) {
+         var cell = row.insertCell(-1);
+         cell.row = r;
+         cell.col = c;
+         cell.onclick = rpcSetLed;
+      }
+   }
+
+   rpcGetLed();
+}
+
+</script>
+</head>
+
+<body onLoad="init()">
+<table id="color">
+</table>
+<br />
+<table id="led">
+</table>
+</body>
+
+</html>

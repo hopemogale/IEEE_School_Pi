@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Websocket Example</title>
+
+<style>
+   body {
+      font-family: sans-serif;
+   }
+   td {
+      width: 50px;
+      height: 50px;
+      border: 1px solid black;
+   }
+   table {
+      border-spacing: 0;
+   }
+</style>
+<script>
+var webSocket; 
+  
+function init()
+{
+   webSocket = new WebSocket("ws://"+location.host);
+   webSocket.onerror = function(e) {
+      alert("Websocket error "+e.data);
+   }
+   webSocket.onmessage = wsReceive;
+}
+   
+function wsReceive(e)
+{
+   var o = JSON.parse(e.data);
+   var k = o.key;
+
+   document.getElementById("up").style.backgroundColor    = (k == 103) ? "red" : "white";
+   document.getElementById("left").style.backgroundColor  = (k == 105) ? "red" : "white";
+   document.getElementById("right").style.backgroundColor = (k == 106) ? "red" : "white";
+   document.getElementById("down").style.backgroundColor  = (k == 108) ? "red" : "white";
+}
+</script>
+</head>
+
+<body onload="init()">
+<table>
+<tr><td></td><td id="up"></td><td></td></tr>
+<tr><td id="left"></td><td></td><td id="right"></td></tr>
+<tr><td></td><td id="down"></td><td></td></tr>
+</table>
+</body>
+</html>

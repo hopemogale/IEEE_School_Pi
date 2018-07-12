@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Simple LED interface</title>
+
+<style>
+   body {
+      font-family: sans-serif;
+   }
+</style>
+<script>
+   
+function rpc_call()
+{
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+         o = JSON.parse(xhttp.responseText);
+         //document.getElementById("result").innerHTML = "Result: "+o.result;
+      }
+   };
+   
+   var request = {};
+   request.jsonrpc = "2.0";
+   request.method = "setled";
+   request.params = [];
+   request.params[0] = parseInt(document.getElementById("x").value);
+   request.params[1] = parseInt(document.getElementById("y").value);
+   request.params[2] = parseInt(document.getElementById("r").value);
+   request.params[3] = parseInt(document.getElementById("g").value);
+   request.params[4] = parseInt(document.getElementById("b").value);
+   request.id = 1;
+   
+   xhttp.open("POST", "/json-rpc", true);
+   xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send(JSON.stringify(request));
+}
+
+</script>
+</head>
+
+<body>
+   X (0-7): <input type="text" id="x" value="0" size="3"><br />
+   Y (0-7): <input type="text" id="y" value="0" size="3"><br />
+  
+   R (0-255): <input type="text" id="r" value="0" size="3"><br />
+   G (0-255): <input type="text" id="g" value="0" size="3"><br />
+   B (0-255): <input type="text" id="b" value="0" size="3"><br />
+      
+   <input type="button" value="Set" onclick="rpc_call()">
+</body>
+
+</html>

@@ -28,13 +28,12 @@ function load()
       if (xhttp.readyState == 4 && 
           xhttp.status == 200) {
          o = JSON.parse(xhttp.responseText);
-	
-	if(parseInt(o.temp) < parseInt(30.0)) { 
-         document.getElementById("temp").style.background = "aqua";
-         }         
          
+	 if(parseInt(o.temp) < parseInt(30)){
+	  document.getElementById("temp").style.backgroundcolor = "aqua";
+	}
 
-         document.getElementById("temp").innerHTML = o.temp;
+	 document.getElementById("temp").innerHTML = o.temp;
          window.setTimeout(load, 1000);
       }
    };

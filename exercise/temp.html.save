@@ -32,7 +32,7 @@ function load()
 	if(parseInt(o.temp) < parseInt(30.0)) { 
          document.getElementById("temp").style.background = "aqua";
          }         
-         
+         }
 
          document.getElementById("temp").innerHTML = o.temp;
          window.setTimeout(load, 1000);
